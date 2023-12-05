@@ -11,9 +11,6 @@ for line in f.readlines():
 
     arr.append(tmp_arr)
 
-for j in range(len(arr)):
-    print(arr[j])
-
 
 def check_numbers():
     sum = 0
