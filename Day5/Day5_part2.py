@@ -1,4 +1,4 @@
-f = open("res/DAy5_example.txt")
+f = open("res/Day5_text.txt")
 lines = f.read()
 lines = lines.split("\n\n")
 
@@ -56,7 +56,7 @@ def calculate_new_val(seed_arr, map_arr):
                 print(seed_arr[i][1])
                 print(map_arr[j][1])
                 if map_arr[j][0] <= seed_arr[i][0] <= map_arr[j][1] and map_arr[j][0] <= seed_arr[i][1] <= map_arr[j][1]:
-                    bool = True
+                    return seed_arr
                 elif map_arr[j][0] <= seed_arr[i][0] <= map_arr[j][1] or map_arr[j][0] <= seed_arr[i][1] <= map_arr[j][1]:
                     if seed_arr[i][0] < map_arr[j][0]:
                         temp_arr.append([])
