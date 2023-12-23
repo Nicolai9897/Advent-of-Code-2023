@@ -3,6 +3,7 @@ lines = f.read()
 lines = lines.split("\n\n")
 
 def format_arr(num):
+    """formats maps to make it into arrays which consists of only integers"""
     arr = lines[num]
 
     arr = arr.strip().split("\n")
@@ -77,33 +78,23 @@ def get_new_val(map_arr, seed_arr):
 
 def main():
     low_num = 0
-
     seeds = lines[0].strip("seeds: ").strip("\n").split(" ")
     seeds = calculate_seed_list(seeds)
-    seed_soil = format_arr(1)
-    soil_fertilizer = format_arr(2)
-    fertilizer_water = format_arr(3)
-    water_light = format_arr(4)
-    light_temperature = format_arr(5)
-    temperature_humidity = format_arr(6)
-    humidity_location = format_arr(7)
+    maps = []
+
+    for i in range(1, 8):
+        maps.append(format_arr(i))
 
     for arr in seeds:
         val = [arr]
-        val = calculate_new_val(val, seed_soil)
-        val = calculate_new_val(val, soil_fertilizer)
-        val = calculate_new_val(val, fertilizer_water)
-        val = calculate_new_val(val, water_light)
-        val = calculate_new_val(val, light_temperature)
-        val = calculate_new_val(val, temperature_humidity)
-        val = calculate_new_val(val, humidity_location)
+
+        for i in range(len(maps)):
+            val = calculate_new_val(val, maps[i])
+
         for seed in val:
             if low_num == 0 or seed[0] < low_num:
                 low_num = seed[0]
     print(low_num)
-
-
-
 
 if __name__ == "__main__":
     main()
