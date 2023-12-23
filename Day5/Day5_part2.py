@@ -2,9 +2,6 @@ f = open("res/Day5_text.txt")
 lines = f.read()
 lines = lines.split("\n\n")
 
-
-
-
 def format_arr(num):
     arr = lines[num]
 
@@ -21,80 +18,8 @@ def format_arr(num):
         return_arr.append([])
         return_arr[i].append(arr[i][1])
         return_arr[i].append(arr[i][1] + (arr[i][2] - 1 ))
-        return_arr[i].append(arr[i][0]-arr[i][1])
+        return_arr[i].append(arr[i][0] - arr[i][1])
     return return_arr
-
-"""
-def calculate_new_val(num, arr):
-    num = int(num)
-    for i in range(len(arr)):
-        if arr[i][0] <= num <= arr[i][1]:
-            num += arr[i][2]
-            return num
-    return num
-"""
-
-def calculate_new_val(seed_arr, map_arr):
-    tmp = []
-    bool = True
-    tmp.append([])
-
-    for seed in seed_arr:
-        tmp[0].append(seed)
-    seed_arr = tmp
-    while bool:
-        temp_arr = []
-        for j in range(len(map_arr)):
-            for i in range(len(seed_arr)):
-                print("--------------------------------")
-                print(map_arr)
-                print(seed_arr)
-                print(map_arr[j][0])
-                print(seed_arr[i][0])
-                print(map_arr[j][1])
-                print(map_arr[j][0])
-                print(seed_arr[i][1])
-                print(map_arr[j][1])
-                if map_arr[j][0] <= seed_arr[i][0] <= map_arr[j][1] and map_arr[j][0] <= seed_arr[i][1] <= map_arr[j][1]:
-                    return seed_arr
-                elif map_arr[j][0] <= seed_arr[i][0] <= map_arr[j][1] or map_arr[j][0] <= seed_arr[i][1] <= map_arr[j][1]:
-                    if seed_arr[i][0] < map_arr[j][0]:
-                        temp_arr.append([])
-                        temp_arr[-1].append(seed_arr[i][0])
-                        temp_arr[-1].append(map_arr[j][0] - 1)
-                        temp_arr.append([])
-                        temp_arr[-1].append(map_arr[j][0])
-                        temp_arr[-1].append(seed_arr[i][1])
-                    elif seed_arr[i][1] > map_arr[j][1]:
-                        temp_arr.append([])
-                        temp_arr[-1].append(map_arr[j][1] + 1)
-                        temp_arr[-1].append(seed_arr[i][1])
-                        temp_arr.append([])
-                        temp_arr[-1].append(seed_arr[i][0])
-                        temp_arr[-1].append(map_arr[j][1])
-                    else:
-                        temp_arr.append([])
-                        temp_arr[-1].append(seed_arr[j][0])
-                        temp_arr[-1].append(seed_arr[i][1])
-        seed_arr = temp_arr
-
-
-    for i in range(len(temp_arr)):
-        for j in range(map_arr):
-            if map_arr[j][0] <= temp_arr[i][0] <= map_arr[j][1] and map_arr[j][0] <= temp_arr[i][1] <= map_arr[j][1]:
-                temp_arr[i][0] += map_arr[j][2]
-                temp_arr[i][1] += map_arr[j][2]
-
-    return temp_arr
-
-    """
-    for i in range(len(map_arr)):
-        if map_arr[i][0] <= seed_arr <= map_arr[i][1]:
-            seed_arr += map_arr[i][2]
-            return seed_arr
-    return seed_arr
-    """
-
 
 
 def calculate_seed_list(seeds):
@@ -108,9 +33,52 @@ def calculate_seed_list(seeds):
     return new_seed_list
 
 
+
+def calculate_new_val(seed_arr, map_arr):
+    while True:
+        temp_arr = []
+        for j in range(len(map_arr)):
+            for i in range(len(seed_arr)):
+                if map_arr[j][0] <= seed_arr[i][0] <= map_arr[j][1] and map_arr[j][0] <= seed_arr[i][1] <= map_arr[j][1]:
+                    temp_arr.append(get_new_val(map_arr[j], seed_arr[i]))
+                    seed_arr[i] = [-1, -1]
+
+                elif map_arr[j][0] <= seed_arr[i][0] <= map_arr[j][1] or map_arr[j][0] <= seed_arr[i][1] <= map_arr[j][1]:
+                    if seed_arr[i][0] < map_arr[j][0]:
+                        tmp = [map_arr[j][0], seed_arr[i][1]]
+                        temp_arr.append(get_new_val(map_arr[j], tmp))
+
+                        tmp = [seed_arr[i][0], map_arr[j][0] - 1]
+                        seed_arr[i] = tmp
+
+                    elif seed_arr[i][1] > map_arr[j][1]:
+                        tmp = [seed_arr[i][0], map_arr[j][1]]
+                        temp_arr.append(get_new_val(map_arr[j], tmp))
+
+                        tmp = [map_arr[j][1] + 1, seed_arr[i][1]]
+                        seed_arr[i] = tmp
+
+                    else:
+                        temp_arr.append([seed_arr[j][0], seed_arr[i][1]])
+
+        if len(temp_arr) == 0 :
+            return seed_arr
+
+        for i in range(len(seed_arr)):
+            if seed_arr[i] != [-1, -1]:
+                temp_arr.append(seed_arr[i])
+
+        return temp_arr
+
+def get_new_val(map_arr, seed_arr):
+    increment_value = map_arr[2]
+    tmp = [seed_arr[0] + increment_value, seed_arr[1] + increment_value]
+    return tmp
+
 def main():
+    low_num = 0
+
     seeds = lines[0].strip("seeds: ").strip("\n").split(" ")
-    print("")
     seeds = calculate_seed_list(seeds)
     seed_soil = format_arr(1)
     soil_fertilizer = format_arr(2)
@@ -120,16 +88,8 @@ def main():
     temperature_humidity = format_arr(6)
     humidity_location = format_arr(7)
 
-    #calculate_seed_list(seeds)
-
-    #print(seed_soil)
-    print(f"Number off seeds: {len(seeds)}")
-    low_num = None
-    tall = 0
-    print(seeds)
-    for val in seeds:
-        tall += 1
-        print(f"seed: {tall}    Seed number: {val}")
+    for arr in seeds:
+        val = [arr]
         val = calculate_new_val(val, seed_soil)
         val = calculate_new_val(val, soil_fertilizer)
         val = calculate_new_val(val, fertilizer_water)
@@ -137,12 +97,10 @@ def main():
         val = calculate_new_val(val, light_temperature)
         val = calculate_new_val(val, temperature_humidity)
         val = calculate_new_val(val, humidity_location)
-        print(f"seed location: {val}")
-        print("-------------")
-        if low_num is None or low_num > val:
-            low_num = val
+        for seed in val:
+            if low_num == 0 or seed[0] < low_num:
+                low_num = seed[0]
     print(low_num)
-    #for seed in seeds:
 
 
 
