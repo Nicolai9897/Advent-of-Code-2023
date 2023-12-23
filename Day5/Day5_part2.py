@@ -24,6 +24,7 @@ def format_arr(num):
 
 
 def calculate_seed_list(seeds):
+    """calculate an array with multiple arrays of eachs seeds first and last digits"""
     new_seed_list = []
     for i in range(len(seeds)):
         if i % 2 == 0:
@@ -36,15 +37,20 @@ def calculate_seed_list(seeds):
 
 
 def calculate_new_val(seed_arr, map_arr):
+    """Splits the seed arrays into the ranges matching the arrays of the maps,
+    and calculate the correct new value for each seed"""
     while True:
         temp_arr = []
         for j in range(len(map_arr)):
             for i in range(len(seed_arr)):
+                # If both the lowest and highest number in the seed interval is in the map interval, provide new value
                 if map_arr[j][0] <= seed_arr[i][0] <= map_arr[j][1] and map_arr[j][0] <= seed_arr[i][1] <= map_arr[j][1]:
                     temp_arr.append(get_new_val(map_arr[j], seed_arr[i]))
                     seed_arr[i] = [-1, -1]
 
+                # If one of the numbers of the seed interval is in the map interval
                 elif map_arr[j][0] <= seed_arr[i][0] <= map_arr[j][1] or map_arr[j][0] <= seed_arr[i][1] <= map_arr[j][1]:
+                    # If the the seed intervals lowest numbers is outside of the map interval
                     if seed_arr[i][0] < map_arr[j][0]:
                         tmp = [map_arr[j][0], seed_arr[i][1]]
                         temp_arr.append(get_new_val(map_arr[j], tmp))
@@ -52,15 +58,13 @@ def calculate_new_val(seed_arr, map_arr):
                         tmp = [seed_arr[i][0], map_arr[j][0] - 1]
                         seed_arr[i] = tmp
 
+                    # If the highest number of the seed interval is outside of the map interval
                     elif seed_arr[i][1] > map_arr[j][1]:
                         tmp = [seed_arr[i][0], map_arr[j][1]]
                         temp_arr.append(get_new_val(map_arr[j], tmp))
 
                         tmp = [map_arr[j][1] + 1, seed_arr[i][1]]
                         seed_arr[i] = tmp
-
-                    else:
-                        temp_arr.append([seed_arr[j][0], seed_arr[i][1]])
 
         if len(temp_arr) == 0 :
             return seed_arr
